@@ -1,0 +1,45 @@
+local function optimizeGraphics()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    game.Lighting.GlobalShadows = false
+    game.Lighting.Outlines = false
+    game.Workspace.CurrentCamera.FieldOfView = 70
+    game.Workspace.FallenPartsDestroyHeight = -10000
+end
+
+local function optimizeGameElements()
+    for _, part in pairs(game.Workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+    
+    local function removeFarObjects()
+        for _, obj in pairs(game.Workspace:GetChildren()) do
+            if obj:IsA("Model") and obj:FindFirstChild("Humanoid") == nil then
+                local distance = (obj:GetModelCFrame().p - game.Workspace.CurrentCamera.CFrame.p).magnitude
+                if distance > 500 then
+                    obj:Destroy()
+                end
+            end
+        end
+    end
+    
+    while true do
+        removeFarObjects()
+        wait(10)
+    end
+end
+
+local function isMobile()
+    return game:GetService("UserInputService").TouchEnabled
+end
+
+if isMobile() then
+    optimizeGraphics()
+    spawn(optimizeGameElements)
+end
+
+print("Optimización aplicada para dispositivos móviles.")
+]]
+
+return code
